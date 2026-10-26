@@ -77,6 +77,9 @@ class CRM_Pulse_Check_HostStatus {
     if (is_string($jobs)) {
       return ['status' => 'fail', 'detail' => $jobs];
     }
+    // civenv's health run reads this check through System.check; judging it
+    // here would keep a single failed run failing forever.
+    unset($jobs['health']);
 
     // The file's freshness window is the FASTEST job's window (a setup with
     // only a weekly backup writes weekly), never tighter than the global one.

@@ -80,6 +80,8 @@ pulse reads timestamps with PHP's `strtotime()`. Write ISO 8601 with an explicit
 - Without an `environments` object, pulse judges the top-level `jobs`.
 - With an `environments` object, pulse judges only the jobs of the environment named in `pulse_host_status_environment`. If that setting is empty, the check fails instead of guessing. It also fails when the named environment is missing or has no jobs.
 
+A job named `health` is never judged. It stands for the host's own health run, which reads this check, so judging it would keep one failed run failing.
+
 A host that runs a single instance can write `jobs` alone. A host that serves several instances from one file writes `environments` and gives each instance its name. The top-level `jobs` must still be present in that case, even if it is empty.
 
 ## Rules

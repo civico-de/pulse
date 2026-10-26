@@ -71,6 +71,18 @@ class CRM_Pulse_Check_ChecksTest extends TestCase {
     );
   }
 
+  public function testHostStatusIgnoresTheHealthRunThatReadsIt(): void {
+    $now = strtotime('2026-07-23 12:00:00');
+    $data = [
+      'updated' => '2026-07-23 11:45:00',
+      'jobs' => [
+        'dump' => ['status' => 'ok', 'finished' => '2026-07-23 03:00:00'],
+        'health' => ['status' => 'error', 'finished' => '2026-07-23 11:45:00', 'detail' => 'health exited 1'],
+      ],
+    ];
+    $this->assertSame('ok', CRM_Pulse_Check_HostStatus::evaluate($data, $now, 26)['status']);
+  }
+
   public function testHostStatusPerJobIntervalWindow(): void {
     $now = strtotime('2026-07-23 12:00:00');
     // A weekly backup finished 4 days ago: stale under the global 26h window,

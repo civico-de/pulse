@@ -80,6 +80,8 @@ pulse liest Zeitstempel mit der PHP-Funktion `strtotime()`. Schreiben Sie ISO 86
 - Ohne ein Objekt `environments` bewertet pulse die `jobs` der obersten Ebene.
 - Mit einem Objekt `environments` bewertet pulse nur die Jobs des Environments, das in `pulse_host_status_environment` steht. Ist diese Einstellung leer, schlägt der Check fehl, statt zu raten. Er schlägt auch fehl, wenn das genannte Environment fehlt oder keine Jobs hat.
 
+Ein Job namens `health` wird nie bewertet. Er steht für den Health-Lauf des Hosts, der diesen Check selbst liest; ihn zu bewerten, hielte einen einzigen fehlgeschlagenen Lauf dauerhaft im Fehler.
+
 Ein Host mit einer einzigen Instanz kann nur `jobs` schreiben. Ein Host, der mehrere Instanzen aus einer Datei bedient, schreibt `environments` und gibt jeder Instanz ihren Namen. Die `jobs` der obersten Ebene müssen auch dann vorhanden sein, notfalls leer.
 
 ## Regeln
