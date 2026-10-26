@@ -10,7 +10,8 @@ declare(strict_types = 1);
  * global cron check stays green. A second leg catches never-run active jobs:
  * `civicrm_job` has no `created` column, so `pulse_jobs_first_seen` records
  * when each was first observed and fails it after
- * `pulse_jobs_never_ran_grace_hours` (default 48; 0 disables).
+ * `pulse_jobs_never_ran_grace_hours` (default 48; 0 disables). Jobs core
+ * refuses to run in this environment are not judged.
  */
 class CRM_Pulse_Check_Jobs {
 
@@ -68,10 +69,13 @@ class CRM_Pulse_Check_Jobs {
   private static function staleJobs(int $factor): array {
     $stale = [];
     $dao = CRM_Core_DAO::executeQuery(
-      'SELECT name, run_frequency, last_run FROM civicrm_job WHERE is_active = 1 AND last_run IS NOT NULL',
+      'SELECT name, run_frequency, last_run, parameters FROM civicrm_job WHERE is_active = 1 AND last_run IS NOT NULL',
     );
-    /** @var \CRM_Core_DAO&object{name: ?string, run_frequency: ?string, last_run: ?string} $dao */
+    /** @var \CRM_Core_DAO&object{name: ?string, run_frequency: ?string, last_run: ?string, parameters: ?string} $dao */
     while ($dao->fetch()) {
+      if (!self::allowedToRun($dao->parameters)) {
+        continue;
+      }
       $interval = self::FREQUENCY_MINUTES[(string) $dao->run_frequency] ?? NULL;
       if ($interval === NULL) {
         continue;
@@ -97,10 +101,13 @@ class CRM_Pulse_Check_Jobs {
   private static function neverRanJobs(int $graceHours): array {
     $names = [];
     $dao = CRM_Core_DAO::executeQuery(
-      'SELECT name FROM civicrm_job WHERE is_active = 1 AND last_run IS NULL',
+      'SELECT name, parameters FROM civicrm_job WHERE is_active = 1 AND last_run IS NULL',
     );
-    /** @var \CRM_Core_DAO&object{name: ?string} $dao */
+    /** @var \CRM_Core_DAO&object{name: ?string, parameters: ?string} $dao */
     while ($dao->fetch()) {
+      if (!self::allowedToRun($dao->parameters)) {
+        continue;
+      }
       $names[] = (string) $dao->name;
     }
 
@@ -121,6 +128,26 @@ class CRM_Pulse_Check_Jobs {
       $out[] = CRM_Pulse_Util::ts('%1 never ran (active, first seen >%2h ago)', [1 => $name, 2 => $graceHours]);
     }
     return $out;
+  }
+
+  /**
+   * Core's own gate: outside Production it refuses every job without
+   * `runInNonProductionEnvironment`. Unparseable parameters count as none, as in core.
+   */
+  private static function allowedToRun(?string $parameters): bool {
+    try {
+      $params = CRM_Core_BAO_Job::parseParameters($parameters);
+    }
+    catch (CRM_Core_Exception $e) {
+      $params = [];
+    }
+    try {
+      CRM_Core_BAO_Setting::isAPIJobAllowedToRun($params);
+    }
+    catch (CRM_Core_Exception $e) {
+      return FALSE;
+    }
+    return TRUE;
   }
 
   /**

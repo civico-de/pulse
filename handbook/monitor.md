@@ -66,6 +66,8 @@ The message appears when an active scheduled job has not run within its run freq
 
 A second part catches active jobs that have never run. The job table has no creation date, so pulse records in `pulse_jobs_first_seen` when it first saw each such job. The message appears when a job has still not run `pulse_jobs_never_ran_grace_hours` later, 48 by default. Jobs that run or are deleted drop out of that record. Each of the two settings turns off only its own part.
 
+Outside the Production environment, CiviCRM runs only jobs with the parameter `runInNonProductionEnvironment` and refuses the rest. pulse judges neither part for a refused job, so a staging copy reports no late jobs.
+
 ## pulse_queues
 
 The message appears on items stuck in CiviCRM's persistent queues. An item counts as stuck when it has waited in an active queue longer than `pulse_queue_max_age_hours`, 6 by default. The check also fails when a queue is in status aborted, which means a task died and processing stopped.

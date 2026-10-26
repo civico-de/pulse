@@ -66,6 +66,8 @@ Der Check schlägt fehl, wenn ein aktiver geplanter Job nicht innerhalb seiner A
 
 Ein zweiter Teil erkennt aktive Jobs, die noch nie gelaufen sind. Die Job-Tabelle hat kein Erstellungsdatum, daher hält pulse in `pulse_jobs_first_seen` fest, wann es jeden solchen Job zum ersten Mal gesehen hat. Der Check schlägt fehl, wenn ein Job `pulse_jobs_never_ran_grace_hours` später immer noch nicht gelaufen ist, standardmäßig 48. Jobs, die laufen oder gelöscht werden, fallen aus dieser Liste heraus. Jede der beiden Einstellungen schaltet nur ihren eigenen Teil ab.
 
+Außerhalb der Umgebung Production führt CiviCRM nur Jobs mit dem Parameter `runInNonProductionEnvironment` aus und verweigert die übrigen. Einen verweigerten Job bewertet pulse in keinem der beiden Teile, eine Staging-Kopie meldet also keine verspäteten Jobs.
+
 ## pulse_queues
 
 Der Check schlägt bei Elementen fehl, die in den persistenten Queues von CiviCRM hängen. Ein Element gilt als hängend, wenn es länger als `pulse_queue_max_age_hours` in einer aktiven Queue gewartet hat, standardmäßig 6. Der Check schlägt außerdem fehl, wenn eine Queue im Status aborted ist. Das bedeutet, dass eine Aufgabe abgestürzt ist und die Verarbeitung angehalten hat.

@@ -77,6 +77,8 @@ class CRM_Pulse_Check_ChecksHeadlessTest extends TestCase implements HeadlessInt
     }
     $this->tempFiles = [];
     parent::tearDown();
+    // The rollback restores the rows, not the settings cache (environment, mail).
+    \Civi::service('settings_manager')->flush();
   }
 
   private function tempFile(string $contents): string {
@@ -266,6 +268,30 @@ class CRM_Pulse_Check_ChecksHeadlessTest extends TestCase implements HeadlessInt
     $this->soleActiveJob('Daily', date('Y-m-d H:i:s', \CRM_Utils_Time::time() - (400 * 86_400)));
     \CRM_Core_DAO::executeQuery('UPDATE civicrm_job SET is_active = 0');
     self::assertSame('ok', CRM_Pulse_Check_Jobs::check()['status']);
+  }
+
+  public function testJobsCoreRefusesOutsideProductionAreNotJudged(): void {
+    \Civi::settings()->set('pulse_jobs_never_ran_grace_hours', 48);
+    \Civi::settings()->set('pulse_jobs_grace_factor', 3);
+    \Civi::settings()->set('environment', 'Staging');
+    $name = $this->soleActiveJob('Daily', date('Y-m-d H:i:s', \CRM_Utils_Time::time() - (14 * 86_400)));
+    \CRM_Core_DAO::executeQuery("UPDATE civicrm_job SET parameters = 'version=3' WHERE is_active = 1");
+    self::assertSame('ok', CRM_Pulse_Check_Jobs::check()['status']);
+
+    // Neither does a never-run job core would refuse.
+    $this->soleActiveJob('Daily', NULL);
+    \CRM_Core_DAO::executeQuery('UPDATE civicrm_job SET parameters = NULL WHERE is_active = 1');
+    \Civi::settings()->set('pulse_jobs_first_seen', [$name => \CRM_Utils_Time::time() - (49 * 3600)]);
+    self::assertSame('ok', CRM_Pulse_Check_Jobs::check()['status']);
+
+    // A job allowed to run outside Production is judged as usual.
+    $this->soleActiveJob('Daily', date('Y-m-d H:i:s', \CRM_Utils_Time::time() - (14 * 86_400)));
+    \CRM_Core_DAO::executeQuery(
+      "UPDATE civicrm_job SET parameters = 'runInNonProductionEnvironment=TRUE' WHERE is_active = 1",
+    );
+    $r = CRM_Pulse_Check_Jobs::check();
+    self::assertSame('fail', $r['status']);
+    self::assertStringContainsString($name, $r['detail']);
   }
 
   public function testJobsNeverRanLegRegistersBeforeItAccuses(): void {
