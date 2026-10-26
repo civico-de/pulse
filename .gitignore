@@ -1,0 +1,9 @@
+.phpunit.result.cache
+coverage-clover.xml
+# Installed by composer, not committed; composer.lock is.
+/vendor/
+.docker/.env
+.DS_Store
+
+# ckrelease dist output
+/.ckrelease/

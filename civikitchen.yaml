@@ -1,0 +1,13 @@
+$schema: https://raw.githubusercontent.com/civico-de/civikitchen/main/packages/civikitchen-scenario-schema/scenario.schema.json
+version: 1
+policy:
+  # Expected values for ckconform (the checker lives in the public civikitchen
+  # image; these values are ours).
+  license: AGPL-3.0-or-later
+  copyright: 'civico GmbH'
+
+  # Uncovered by design: the Drupal/WordPress legs of the CMS checks and the
+  # endpoint's HTTP layer (civiExit). Raise as coverage grows, never lower it.
+  coverage:
+    minimum: 83
+  renovate_preset: github>civico-de/renovate

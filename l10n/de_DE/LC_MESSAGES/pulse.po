@@ -1,0 +1,240 @@
+# German translation for pulse check details.
+#
+# Sources: CRM_Pulse_Util::ts() literals in CRM/Pulse/*.php,
+# CRM/Pulse/Check/*.php and Civi/Pulse/HealthEndpoint.php. Recompile with
+# `msgfmt --statistics -o pulse.mo pulse.po` after every edit — CiviCRM reads
+# only the .mo.
+msgid ""
+msgstr ""
+"Project-Id-Version: pulse\n"
+"PO-Revision-Date: 2026-08-05\n"
+"Language-Team: German\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: Civi/Pulse/HealthEndpoint.php
+msgid "pulse_token setting is not set"
+msgstr "Setting pulse_token ist nicht gesetzt"
+
+#: Civi/Pulse/HealthEndpoint.php
+msgid "query failed"
+msgstr "Datenbank-Abfrage fehlgeschlagen"
+
+#: Civi/Pulse/HealthEndpoint.php
+msgid "cron has never run"
+msgstr "Cron ist noch nie gelaufen"
+
+#: Civi/Pulse/HealthEndpoint.php
+msgid "invalid pulse_min_severity '%1'"
+msgstr "ungültige pulse_min_severity '%1'"
+
+#: Civi/Pulse/HealthEndpoint.php
+msgid "System.check threw: %1"
+msgstr "System.check warf einen Fehler: %1"
+
+#: CRM/Pulse/Check/Disk.php
+msgid "could not stat filesystem"
+msgstr "Dateisystem konnte nicht abgefragt werden"
+
+#: CRM/Pulse/Check/Disk.php
+msgid "%1%% free (%2 GB) — threshold %3%%"
+msgstr "%1%% frei (%2 GB) — Schwellwert %3%%"
+
+#: CRM/Pulse/Check/Duplicates.php
+msgid "%1 contact(s) created in the last %2 day(s) share an e-mail with an existing contact (threshold %3), e.g. %4"
+msgstr "%1 Kontakt(e) der letzten %2 Tag(e) teilen eine E-Mail-Adresse mit einem Bestandskontakt (Schwellwert %3), z. B. %4"
+
+#: CRM/Pulse/Check/Duplicates.php
+msgid "%1 contact(s) created in the last %2 day(s) share an e-mail with an existing contact (normal %3, limit %4), e.g. %5"
+msgstr "%1 Kontakt(e) der letzten %2 Tag(e) teilen eine E-Mail-Adresse mit einem Bestandskontakt (normal %3, Grenze %4), z. B. %5"
+
+#: CRM/Pulse/Check/Queues.php
+msgid "queue '%1' aborted"
+msgstr "Queue '%1' abgebrochen"
+
+#: CRM/Pulse/Check/Queues.php
+msgid "queue '%1': %2 item(s) stuck, oldest %3h (max %4h)"
+msgstr "Queue '%1': %2 Element(e) hängen, ältestes seit %3h (max. %4h)"
+
+#: CRM/Pulse/Check/Jobs.php
+msgid "%1 (%2, last run %3h ago)"
+msgstr "%1 (%2, letzter Lauf vor %3h)"
+
+#: CRM/Pulse/Check/Jobs.php
+msgid "%1 never ran (active, first seen >%2h ago)"
+msgstr "%1 lief noch nie (aktiv, erstmals gesehen vor >%2h)"
+
+#: CRM/Pulse/Check/Payments.php
+msgid "%1 webhook(s) stuck in new/processing, oldest %2h (max %3h)"
+msgstr "%1 Webhook(s) hängen in new/processing, ältester seit %2h (max. %3h)"
+
+#: CRM/Pulse/Check/Payments.php
+msgid "%1 webhook(s) errored in the last %2h"
+msgstr "%1 Webhook(s) mit Fehler in den letzten %2h"
+
+#: CRM/Pulse/Check/HostStatus.php
+msgid "status file not readable — mount missing or never written"
+msgstr "Status-Datei nicht lesbar — Mount fehlt oder Datei wurde nie geschrieben"
+
+#: CRM/Pulse/Check/HostStatus.php
+msgid "status file is not valid host status JSON"
+msgstr "Status-Datei ist kein gültiges Host-Status-JSON"
+
+#: CRM/Pulse/Check/HostStatus.php
+msgid "status file stale (not updated in %1h)"
+msgstr "Status-Datei veraltet (seit %1h nicht aktualisiert)"
+
+#: CRM/Pulse/Check/HostStatus.php
+msgid ""
+"pulse_host_status_environment is not set, but the status file covers "
+"several environments — set it to this instance's environment name"
+msgstr ""
+"pulse_host_status_environment ist nicht gesetzt, die Status-Datei umfasst "
+"aber mehrere Environments — auf den Environment-Namen dieser Instanz setzen"
+
+#: CRM/Pulse/Check/HostStatus.php
+msgid "no jobs recorded for environment \"%1\""
+msgstr "keine Jobs für Environment \"%1\" aufgezeichnet"
+
+#: CRM/Pulse/Check/HostStatus.php
+msgid "%1 failed%2"
+msgstr "%1 fehlgeschlagen%2"
+
+#: CRM/Pulse/Check/HostStatus.php
+msgid "%1: no success in %2h"
+msgstr "%1: kein Erfolg seit %2h"
+
+#: CRM/Pulse/Check/CmsUpdates.php
+msgid "updates: %1"
+msgstr "Updates: %1"
+
+#: CRM/Pulse/Check/FatalErrors.php
+msgid "%1 PHP error(s) in watchdog (last %2 min), latest: %3"
+msgstr "%1 PHP-Fehler im Watchdog (letzte %2 Min.), zuletzt: %3"
+
+#: CRM/Pulse/Check/FatalErrors.php
+msgid "%1 fatal-error marker(s) in CiviCRM logs touched within %2 min"
+msgstr "%1 Fatal-Error-Marker in CiviCRM-Logs der letzten %2 Min."
+
+#: CRM/Pulse/Check/Civirules.php
+msgid "%1 CiviRules error line(s) in CiviCRM logs within the window"
+msgstr "%1 CiviRules-Fehlerzeile(n) in CiviCRM-Logs im Zeitfenster"
+
+#: CRM/Pulse/Check/Civirules.php
+msgid "condition_link invalid (rule evaluation aborts): rule_condition ids %1"
+msgstr "condition_link ungültig (Regel-Auswertung bricht ab): rule_condition-IDs %1"
+
+#: CRM/Pulse/Check/Civirules.php
+msgid "rule %1: trigger %2 missing"
+msgstr "Regel %1: Trigger %2 fehlt"
+
+#: CRM/Pulse/Check/Civirules.php
+msgid "rule %1: trigger inactive"
+msgstr "Regel %1: Trigger inaktiv"
+
+#: CRM/Pulse/Check/Civirules.php
+msgid "rule %1: trigger class %2 not loadable"
+msgstr "Regel %1: Trigger-Klasse %2 nicht ladbar"
+
+#: CRM/Pulse/Check/Civirules.php
+msgid "rule_condition %1 (rule %2): condition definition missing"
+msgstr "rule_condition %1 (Regel %2): Bedingungs-Definition fehlt"
+
+#: CRM/Pulse/Check/Civirules.php
+msgid "rule_condition %1: class %2 not loadable"
+msgstr "rule_condition %1: Klasse %2 nicht ladbar"
+
+#: CRM/Pulse/Check/Civirules.php
+msgid "rule_condition %1 (rule %2): params not unserializable"
+msgstr "rule_condition %1 (Regel %2): Parameter nicht deserialisierbar"
+
+#: CRM/Pulse/Check/Civirules.php
+msgid "rule_action %1 (rule %2): action definition missing"
+msgstr "rule_action %1 (Regel %2): Aktions-Definition fehlt"
+
+#: CRM/Pulse/Check/Civirules.php
+msgid "rule_action %1: class %2 not loadable"
+msgstr "rule_action %1: Klasse %2 nicht ladbar"
+
+#: CRM/Pulse/Check/Civirules.php
+msgid "rule_action %1 (rule %2): params not unserializable"
+msgstr "rule_action %1 (Regel %2): Parameter nicht deserialisierbar"
+
+#: CRM/Pulse/Check/Civirules.php
+msgid "rule %1: active but has no active action"
+msgstr "Regel %1: aktiv, aber ohne aktive Aktion"
+
+#: CRM/Pulse/StatusCheck.php
+msgid "Could not check: %1"
+msgstr "Konnte nicht prüfen: %1"
+
+#: CRM/Pulse/StatusCheck.php
+msgid "Database query failed"
+msgstr "Datenbank-Abfrage fehlgeschlagen"
+
+#: CRM/Pulse/StatusCheck.php
+msgid "Extension updates available"
+msgstr "Updates für Extensions verfügbar"
+
+#: CRM/Pulse/StatusCheck.php
+msgid "Extension feed not readable"
+msgstr "Extension-Verzeichnis nicht lesbar"
+
+#: CRM/Pulse/StatusCheck.php
+msgid "CMS updates pending"
+msgstr "CMS-Updates ausstehend"
+
+#: CRM/Pulse/StatusCheck.php
+msgid "Recent PHP fatal errors"
+msgstr "Aktuelle fatale PHP-Fehler"
+
+#: CRM/Pulse/StatusCheck.php
+msgid "Scheduled jobs late"
+msgstr "Geplante Jobs verspätet"
+
+#: CRM/Pulse/StatusCheck.php
+msgid "Queue items stuck"
+msgstr "Queue-Elemente hängen"
+
+#: CRM/Pulse/StatusCheck.php
+msgid "Payment webhooks stuck or failed"
+msgstr "Payment-Webhooks hängen oder sind fehlgeschlagen"
+
+#: CRM/Pulse/StatusCheck.php
+msgid "Low disk space"
+msgstr "Wenig freier Speicherplatz"
+
+#: CRM/Pulse/StatusCheck.php
+msgid "Host jobs failing"
+msgstr "Host-Jobs fehlgeschlagen"
+
+#: CRM/Pulse/StatusCheck.php
+msgid "CiviRules problems"
+msgstr "Probleme mit CiviRules"
+
+#: CRM/Pulse/StatusCheck.php
+msgid "Spike of possible duplicate contacts"
+msgstr "Auffällig viele mögliche Kontakt-Duplikate"
+
+#: CRM/Pulse/Util.php
+msgid "the CiviCRM log directory is not usable"
+msgstr "das Log-Verzeichnis von CiviCRM ist nicht nutzbar"
+
+#: CRM/Pulse/Check/Payments.php
+msgid "could not check: the webhook table has no status or created_date column"
+msgstr "konnte nicht prüfen: der Webhook-Tabelle fehlt die Spalte status oder created_date"
+
+#: CRM/Pulse/Check/Updates.php
+msgid "Could not check: invalid pulse_updates_min_severity '%1'"
+msgstr "Konnte nicht prüfen: ungültige pulse_updates_min_severity '%1'"
+
+#: CRM/Pulse/Check/Updates.php
+msgid "Could not check: the extension feed could not be read (%1). Until it can, the update check reports the versions of the last successful read."
+msgstr "Konnte nicht prüfen: das Extension-Verzeichnis war nicht lesbar (%1). Bis es wieder lesbar ist, meldet der Update-Check die Versionen des letzten erfolgreichen Abrufs."
+
+#: CRM/Pulse/Check/Updates.php
+msgid "These installed extensions have a newer release:"
+msgstr "Für diese installierten Extensions gibt es ein neueres Release:"

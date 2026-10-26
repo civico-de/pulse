@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backupGlobals="false" backupStaticAttributes="false" colors="true" convertErrorsToExceptions="true" convertNoticesToExceptions="true" convertWarningsToExceptions="true" convertDeprecationsToExceptions="true" processIsolation="false" stopOnFailure="false" cacheResult="false" bootstrap="tests/phpunit/bootstrap.php" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <coverage>
+    <!-- Scoped to real extension code: the civix shim, DAO boilerplate and
+         tests/ would otherwise dilute the numbers into meaninglessness. -->
+    <include>
+      <directory suffix=".php">./Civi</directory>
+      <directory suffix=".php">./CRM</directory>
+      <file>./pulse.php</file>
+    </include>
+  </coverage>
+  <listeners>
+    <listener class="Civi\Test\CiviTestListener">
+      <arguments/>
+    </listener>
+  </listeners>
+  <testsuites>
+    <testsuite name="pulse Tests">
+      <directory>./tests/phpunit</directory>
+    </testsuite>
+  </testsuites>
+</phpunit>

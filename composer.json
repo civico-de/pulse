@@ -1,0 +1,56 @@
+{
+  "name": "civico/pulse",
+  "description": "CiviCRM extension pulse: token-protected health-check endpoint (db + cron + system checks)",
+  "type": "civicrm-ext",
+  "license": "AGPL-3.0-or-later",
+  "require": {
+    "php": ">=8.2",
+    "ext-mbstring": "*",
+    "civico-de/stdlib": "^0.1"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.6"
+  },
+  "autoload": {
+    "psr-4": {
+      "Civi\\Pulse\\": "Civi/Pulse/"
+    },
+    "psr-0": {
+      "CRM_": "."
+    }
+  },
+  "config": {
+    "platform": {
+      "php": "8.2.0"
+    },
+    "sort-packages": true
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/civico-de/stdlib"
+    }
+  ],
+  "extra": {
+    "strauss": {
+      "target_directory": "vendor",
+      "namespace_prefix": "Civi\\Pulse\\Vendor\\",
+      "classmap_prefix": "Civi_Pulse_Vendor_",
+      "packages": [
+        "civico-de/stdlib"
+      ]
+    }
+  },
+  "scripts": {
+    "prefix-namespaces": [
+      "@php .civikitchen/strauss.php",
+      "@composer dump-autoload"
+    ],
+    "post-install-cmd": [
+      "@prefix-namespaces"
+    ],
+    "post-update-cmd": [
+      "@prefix-namespaces"
+    ]
+  }
+}

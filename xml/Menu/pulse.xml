@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<menu>
+  <item>
+    <path>civicrm/pulse</path>
+    <page_callback>Civi\Pulse\HealthEndpoint::handle</page_callback>
+    <title>Pulse Health Check</title>
+    <!-- Public route: authentication is the shared token (pulse_token). -->
+    <access_callback>1</access_callback>
+    <is_public>true</is_public>
+  </item>
+</menu>

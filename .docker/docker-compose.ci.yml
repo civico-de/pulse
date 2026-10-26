@@ -1,0 +1,65 @@
+# CI stack — standalone, NOT an override of docker-compose.yml. App + db
+# only: no ports, no SMTP sink, no sibling mounts (CI checks out this
+# extension alone; unit tests use stub mailers, integrations are covered by
+# the E2E suites, which run locally against the full dev stack).
+#
+#   docker compose -f .docker/docker-compose.ci.yml up -d --wait
+#   docker compose -f .docker/docker-compose.ci.yml exec -T -u www-data app bash -c \
+#     'cd /var/www/html/ext/pulse && CIVICRM_UF=UnitTests phpunit --coverage-text tests/phpunit && phpstan analyse'
+#
+# Keep image tag and db version in sync with docker-compose.yml.
+#
+# :v1 is the released contract image — the same version the CI workflow is
+# pinned to (@v1). Set CIVIKITCHEN_IMAGE to override, either in the environment
+# or via the shared workflow's `image` input.
+
+# Explicit project name: compose otherwise derives it from the directory, and
+# every extension keeps its stacks in .docker/ — unnamed, they all become one
+# project called "docker" and share volumes across checkouts.
+#
+# The two marked blocks are template-managed (ckinit --update refreshes them);
+# between them the repo adds what only it needs, e.g. a sibling mount:
+#       - ../../sibling:/var/www/html/ext/sibling:ro
+# BEGIN CIVIKITCHEN MANAGED app
+name: pulse-ci
+
+services:
+  app:
+    image: ${CIVIKITCHEN_IMAGE:-ghcr.io/civico-de/civikitchen:v1}
+    pull_policy: always
+    depends_on:
+      db:
+        condition: service_healthy
+    # DB connection = image defaults (db / civicrm), matching the db service.
+    environment:
+      CIVICRM_AUTO_INSTALL: "1"
+      CIVIKITCHEN_SITE_URL: "http://localhost:8080"
+      # The profile seeds as admin, the user the e2e suites log in with.
+      CIVIKITCHEN_DEMO_USER: admin
+      CIVIKITCHEN_PROFILE: dev
+      CIVIKITCHEN_PROFILE_PATH: /civikitchen-profiles
+      CIVIKITCHEN_TRUST_EXTERNAL_PROFILES: "1"
+    volumes:
+      # Mounted under ext/ → enabled on first boot, <requires> resolved.
+      - ..:/var/www/html/ext/pulse
+      - ./profiles:/civikitchen-profiles:ro
+      - ./init.d:/civikitchen-init.d:ro
+# END CIVIKITCHEN MANAGED app
+
+# BEGIN CIVIKITCHEN MANAGED db
+  db:
+    image: mariadb:11.4
+    # Civi\Test's schema rebuild creates triggers as the app user; with binary
+    # logging the server refuses that unless it trusts non-SUPER creators.
+    command: --log-bin-trust-function-creators=1
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: civicrm
+      MYSQL_USER: civicrm
+      MYSQL_PASSWORD: civicrm
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+# END CIVIKITCHEN MANAGED db
