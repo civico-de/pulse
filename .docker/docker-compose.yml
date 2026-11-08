@@ -2,10 +2,12 @@
 # + phpMyAdmin.
 #
 # Usage:
-#   cd .docker && docker compose up -d        # first boot: auto-install + provisioning
+#   /path/to/civikitchen/scaffold/ckup        # composer install, free host ports, `up -d`
+#   cd .docker && docker compose up -d        # default ports below; first boot auto-installs
 #
-# URLs:  CiviCRM http://localhost:8080 (admin/admin)
-#        maildev http://localhost:1080 · phpMyAdmin http://localhost:8081
+# URLs:  CiviCRM http://localhost:${CK_HTTP_PORT:-8080} (admin/admin)
+#        maildev :${CK_MAILDEV_PORT:-1080} · phpMyAdmin :${CK_PMA_PORT:-8081}
+# Host ports come from .docker/.env (gitignored; ckup writes it).
 #
 # Re-provision from scratch (re-seeds the profile, re-runs init.d hooks): docker compose down -v && up -d
 
@@ -23,7 +25,7 @@ services:
       db:
         condition: service_healthy
     ports:
-      - "8080:80"
+      - "${CK_HTTP_PORT:-8080}:80"
     environment:
       CIVICRM_AUTO_INSTALL: "1"
       CIVICRM_DB_HOST: db
@@ -31,7 +33,7 @@ services:
       CIVICRM_DB_USER: civicrm
       CIVICRM_DB_PASSWORD: civicrm
       # Must match the host:port opened in the browser (asset URLs).
-      CIVIKITCHEN_SITE_URL: "http://localhost:8080"
+      CIVIKITCHEN_SITE_URL: "http://localhost:${CK_HTTP_PORT:-8080}"
       CIVIKITCHEN_DEMO_USER: admin
       # Dependencies, config, seed records and API users: profiles/dev/profile.json.
       CIVIKITCHEN_PROFILE: dev
@@ -73,8 +75,8 @@ services:
     # the app answers with 404, so the container never becomes healthy.
     image: maildev/maildev:2.2.1
     ports:
-      - "1080:1080"
-      - "1025:1025"
+      - "${CK_MAILDEV_PORT:-1080}:1080"
+      - "${CK_SMTP_PORT:-1025}:1025"
 
   phpmyadmin:
     # Pinned: a floating tag makes a run unreproducible.
@@ -82,7 +84,7 @@ services:
     depends_on:
       - db
     ports:
-      - "8081:80"
+      - "${CK_PMA_PORT:-8081}:80"
     environment:
       PMA_HOST: db
 

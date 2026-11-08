@@ -2,7 +2,7 @@
 <extension key="pulse" type="module">
   <file>pulse</file>
   <name>Pulse</name>
-  <description>Token-protected health-check endpoint for CiviCRM (civicrm/pulse). Reports database and cron health as JSON for uptime monitors like Uptime Kuma, Nagios or Icinga. Works on Standalone, Drupal and WordPress.</description>
+  <description>Token-protected health endpoint (civicrm/pulse) for uptime monitors such as Uptime Kuma, Nagios or Icinga, plus status checks on CiviCRM's system status page: pending updates, stuck jobs and queues, failed payment webhooks, disk space, PHP fatal errors, CiviRules, duplicate contacts and host-side jobs. Works on Standalone, Drupal and WordPress.</description>
   <license>AGPL-3.0-or-later</license>
   <authors>
     <author>
