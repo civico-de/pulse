@@ -2,6 +2,8 @@
 
 declare(strict_types = 1);
 
+// ckconform-ignore-file raw-sql -- the lint reads CiviRules' raw rows: APIv4 unserializes the params it must find broken
+
 // @mago-expect lint:cyclomatic-complexity
 // @mago-expect lint:kan-defect
 /**

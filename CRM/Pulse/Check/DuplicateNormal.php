@@ -2,6 +2,8 @@
 
 declare(strict_types = 1);
 
+// ckconform-ignore-file raw-sql -- self-join of contacts over shared e-mails, bucketed by age, which APIv4 cannot express
+
 use Civi\Pulse\Vendor\Civico\Stdlib\Cast;
 
 /**

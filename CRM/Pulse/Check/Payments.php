@@ -2,6 +2,8 @@
 
 declare(strict_types = 1);
 
+// ckconform-ignore-file raw-sql -- reads mjwshared's webhook table directly and checks its columns before querying them
+
 /**
  * Stuck / failed payment-processor webhooks, reduced to ok/fail.
  *

@@ -2,6 +2,9 @@
 
 declare(strict_types = 1);
 
+use Civi\Api4\Queue;
+use Civi\Api4\QueueItem;
+
 /**
  * Stuck items in CiviCRM's persistent queues, reduced to ok/fail.
  *
@@ -61,16 +64,13 @@ class CRM_Pulse_Check_Queues {
    * @return list<string>
    */
   private static function abortedQueues(): array {
-    $names = [];
-    $dao = CRM_Core_DAO::executeQuery(
-      "SELECT name FROM civicrm_queue
-       WHERE status = 'aborted' AND (is_template = 0 OR is_template IS NULL)",
-    );
-    /** @var \CRM_Core_DAO&object{name: ?string} $dao */
-    while ($dao->fetch()) {
-      $names[] = (string) $dao->name;
-    }
-    return $names;
+    /** @var list<string> */
+    return Queue::get(checkPermissions: FALSE)
+      ->addSelect('name')
+      ->addWhere('status', '=', 'aborted')
+      ->addClause('OR', ['is_template', '=', FALSE], ['is_template', 'IS NULL'])
+      ->execute()
+      ->column('name');
   }
 
   /**
@@ -82,27 +82,22 @@ class CRM_Pulse_Check_Queues {
   private static function staleItems(int $maxAgeHours): array {
     $now = CRM_Utils_Time::time();
     $out = [];
-    $dao = CRM_Core_DAO::executeQuery(
-      "SELECT qi.queue_name AS queue_name,
-              COUNT(*)       AS cnt,
-              MIN(qi.submit_time) AS oldest
-       FROM civicrm_queue_item qi
-       INNER JOIN civicrm_queue q ON q.name = qi.queue_name
-       WHERE q.status = 'active'
-         AND (q.is_template = 0 OR q.is_template IS NULL)
-         AND qi.submit_time < DATE_SUB(FROM_UNIXTIME(%1), INTERVAL %2 HOUR)
-         AND (qi.release_time IS NULL OR qi.release_time <= FROM_UNIXTIME(%1))
-       GROUP BY qi.queue_name",
-      [
-        1 => [$now, 'Integer'],
-        2 => [$maxAgeHours, 'Integer'],
-      ],
-    );
-    /** @var \CRM_Core_DAO&object{queue_name: string, cnt: string, oldest: ?string} $dao */
-    while ($dao->fetch()) {
-      $oldest = strtotime((string) $dao->oldest);
-      $out[(string) $dao->queue_name] = [
-        'count' => (int) $dao->cnt,
+    $cutoff = date('Y-m-d H:i:s', $now - ($maxAgeHours * 3600));
+    /** @var list<array{queue_name: string, cnt: int, oldest: ?string}> $rows */
+    $rows = QueueItem::get(checkPermissions: FALSE)
+      ->addSelect('queue_name', 'COUNT(id) AS cnt', 'MIN(submit_time) AS oldest')
+      ->addJoin('Queue AS queue', 'INNER', NULL, ['queue_name', '=', 'queue.name'])
+      ->addWhere('queue.status', '=', 'active')
+      ->addClause('OR', ['queue.is_template', '=', FALSE], ['queue.is_template', 'IS NULL'])
+      ->addWhere('submit_time', '<', $cutoff)
+      ->addClause('OR', ['release_time', 'IS NULL'], ['release_time', '<=', date('Y-m-d H:i:s', $now)])
+      ->addGroupBy('queue_name')
+      ->execute()
+      ->getArrayCopy();
+    foreach ($rows as $row) {
+      $oldest = strtotime((string) $row['oldest']);
+      $out[$row['queue_name']] = [
+        'count' => (int) $row['cnt'],
         'oldest_hours' => $oldest ? (int) floor(($now - $oldest) / 3600) : 0,
       ];
     }

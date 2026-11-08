@@ -2,6 +2,8 @@
 
 declare(strict_types = 1);
 
+use Civi\Api4\Job;
+
 // @mago-expect lint:cyclomatic-complexity
 // @mago-expect lint:kan-defect
 /**
@@ -68,23 +70,26 @@ class CRM_Pulse_Check_Jobs {
    */
   private static function staleJobs(int $factor): array {
     $stale = [];
-    $dao = CRM_Core_DAO::executeQuery(
-      'SELECT name, run_frequency, last_run, parameters FROM civicrm_job WHERE is_active = 1 AND last_run IS NOT NULL',
-    );
-    /** @var \CRM_Core_DAO&object{name: ?string, run_frequency: ?string, last_run: ?string, parameters: ?string} $dao */
-    while ($dao->fetch()) {
-      if (!self::allowedToRun($dao->parameters)) {
+    /** @var list<array{name: ?string, run_frequency: ?string, last_run: string, parameters: ?string}> $jobs */
+    $jobs = Job::get(checkPermissions: FALSE)
+      ->addSelect('name', 'run_frequency', 'last_run', 'parameters')
+      ->addWhere('is_active', '=', TRUE)
+      ->addWhere('last_run', 'IS NOT NULL')
+      ->execute()
+      ->getArrayCopy();
+    foreach ($jobs as $job) {
+      if (!self::allowedToRun($job['parameters'])) {
         continue;
       }
-      $interval = self::FREQUENCY_MINUTES[(string) $dao->run_frequency] ?? NULL;
+      $interval = self::FREQUENCY_MINUTES[(string) $job['run_frequency']] ?? NULL;
       if ($interval === NULL) {
         continue;
       }
-      $ageMinutes = (int) floor((CRM_Utils_Time::time() - strtotime((string) $dao->last_run)) / 60);
+      $ageMinutes = (int) floor((CRM_Utils_Time::time() - strtotime($job['last_run'])) / 60);
       if ($ageMinutes > ($interval * $factor)) {
         $stale[] = CRM_Pulse_Util::ts('%1 (%2, last run %3h ago)', [
-          1 => $dao->name,
-          2 => $dao->run_frequency,
+          1 => $job['name'],
+          2 => $job['run_frequency'],
           3 => intdiv($ageMinutes, 60),
         ]);
       }
@@ -100,15 +105,18 @@ class CRM_Pulse_Check_Jobs {
    */
   private static function neverRanJobs(int $graceHours): array {
     $names = [];
-    $dao = CRM_Core_DAO::executeQuery(
-      'SELECT name, parameters FROM civicrm_job WHERE is_active = 1 AND last_run IS NULL',
-    );
-    /** @var \CRM_Core_DAO&object{name: ?string, parameters: ?string} $dao */
-    while ($dao->fetch()) {
-      if (!self::allowedToRun($dao->parameters)) {
+    /** @var list<array{name: ?string, parameters: ?string}> $jobs */
+    $jobs = Job::get(checkPermissions: FALSE)
+      ->addSelect('name', 'parameters')
+      ->addWhere('is_active', '=', TRUE)
+      ->addWhere('last_run', 'IS NULL')
+      ->execute()
+      ->getArrayCopy();
+    foreach ($jobs as $job) {
+      if (!self::allowedToRun($job['parameters'])) {
         continue;
       }
-      $names[] = (string) $dao->name;
+      $names[] = (string) $job['name'];
     }
 
     $firstSeen = Civi::settings()->get('pulse_jobs_first_seen');

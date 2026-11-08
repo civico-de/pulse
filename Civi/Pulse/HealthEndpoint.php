@@ -87,6 +87,7 @@ class HealthEndpoint {
    */
   public static function checkDatabase(): array {
     try {
+      // ckconform-ignore raw-sql -- the cheapest round trip that proves the database answers
       \CRM_Core_DAO::singleValueQuery('SELECT 1');
       return ['status' => 'ok'];
     }
@@ -106,8 +107,12 @@ class HealthEndpoint {
     }
     // civicrm_job_log gets a row per `job.execute` tick even when no job is
     // due; civicrm_job.last_run would look dead all week with only a weekly job.
-    $lastRun = \CRM_Core_DAO::singleValueQuery('SELECT MAX(run_time) FROM civicrm_job_log');
-    if (!$lastRun) {
+    $lastRun =
+      \Civi\Api4\JobLog::get(checkPermissions: FALSE)
+        ->addSelect('MAX(run_time) AS last_run')
+        ->execute()
+        ->first()['last_run'] ?? NULL;
+    if (!is_string($lastRun) || $lastRun === '') {
       return ['status' => 'fail', 'detail' => \CRM_Pulse_Util::ts('cron has never run')];
     }
     $ageMinutes = (int) floor((\CRM_Utils_Time::time() - strtotime($lastRun)) / 60);
