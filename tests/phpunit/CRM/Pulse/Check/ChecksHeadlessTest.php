@@ -79,6 +79,7 @@ class CRM_Pulse_Check_ChecksHeadlessTest extends TestCase implements HeadlessInt
     parent::tearDown();
     // The rollback restores the rows, not the settings cache (environment, mail).
     \Civi::service('settings_manager')->flush();
+    \CRM_Extension_System::singleton(fresh: TRUE);
   }
 
   private function tempFile(string $contents): string {
@@ -379,8 +380,8 @@ class CRM_Pulse_Check_ChecksHeadlessTest extends TestCase implements HeadlessInt
   }
 
   /**
-   * The extension browser reads its feed through a mocked client: $versions
-   * as the feed, or HTTP 500 for NULL. No request leaves the test.
+   * An extension system whose browser reads a mocked feed: $versions as the
+   * feed, or HTTP 500 for NULL. No request leaves the test.
    *
    * @param array<string, string>|null $versions extension key => release
    */
@@ -397,9 +398,21 @@ class CRM_Pulse_Check_ChecksHeadlessTest extends TestCase implements HeadlessInt
       }
       $response = new Response(200, [], (string) json_encode($feed));
     }
-    $browser = \CRM_Extension_System::singleton()->getBrowser();
-    self::assertTrue($browser->isEnabled(), 'the test site must have an extension feed configured');
+    $browser = new \CRM_Extension_Browser('https://extdir.example.org/', '');
     $browser->setGuzzleClient(new Client(['handler' => HandlerStack::create(new MockHandler([$response]))]));
+    \CRM_Extension_System::setSingleton(new class($browser) extends \CRM_Extension_System {
+
+      public function __construct(
+        private readonly \CRM_Extension_Browser $feed,
+      ) {
+        parent::__construct();
+      }
+
+      public function getBrowser(): \CRM_Extension_Browser {
+        return $this->feed;
+      }
+
+    });
     \Civi::cache('extension_browser')->flush();
     \Civi::cache('long')->delete(CRM_Pulse_Check_UpdateFeed::CACHE_KEY);
   }
