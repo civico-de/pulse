@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-11-14
+
 ### Changed
 
 - Requires CiviCRM 6.16 or newer.
@@ -32,7 +34,8 @@
 - A host status file through which a host reports backups and other host-side jobs.
 - Support for Standalone, Drupal and WordPress.
 
-[Unreleased]: https://github.com/civico-de/pulse/compare/v0.10.2...HEAD
+[Unreleased]: https://github.com/civico-de/pulse/compare/v0.11.0...HEAD
+[0.11.0]: https://github.com/civico-de/pulse/compare/v0.10.2...v0.11.0
 [0.10.2]: https://github.com/civico-de/pulse/compare/v0.10.1...v0.10.2
 [0.10.1]: https://github.com/civico-de/pulse/compare/v0.10.0...v0.10.1
 [0.10.0]: https://github.com/civico-de/pulse/releases/tag/v0.10.0
