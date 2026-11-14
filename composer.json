@@ -1,6 +1,5 @@
 {
   "name": "civico/pulse",
-  "description": "CiviCRM extension pulse: token-protected health-check endpoint (db + cron + system checks)",
   "type": "civicrm-ext",
   "license": "AGPL-3.0-or-later",
   "require": {
