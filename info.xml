@@ -21,7 +21,7 @@
   <version>0.10.2</version>
   <develStage>beta</develStage>
   <compatibility>
-    <ver>6.12</ver>
+    <ver>6.16</ver>
   </compatibility>
   <php_compatibility mode="list">
     <ver>8.2</ver>
