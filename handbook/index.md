@@ -4,6 +4,8 @@ title: pulse
 
 # pulse
 
+![pulse: CiviCRM boot, jobs and queues, disk and updates are checked for an uptime monitor and the system status page](images/cover.png)
+
 pulse tells an uptime monitor whether a CiviCRM site is really alive. It adds a token-protected URL that Uptime Kuma, Nagios, Icinga or any other HTTP monitor can poll. A successful answer proves more than a static page could. The web server, PHP, the CMS and CiviCRM booted, the database answered, and cron ran recently.
 
 pulse also reports problems that are not outages as messages on CiviCRM's system status page. Its status checks cover pending updates, stuck scheduled jobs and queues, failed payment webhooks, low disk space, PHP fatal errors, broken CiviRules configuration, duplicate contacts and host-side backups.

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <extension key="pulse" type="module">
   <file>pulse</file>
-  <name>Pulse</name>
+  <name>pulse</name>
   <description>Token-protected health endpoint (civicrm/pulse) for uptime monitors such as Uptime Kuma, Nagios or Icinga, plus status checks on CiviCRM's system status page: pending updates, stuck jobs and queues, failed payment webhooks, disk space, PHP fatal errors, CiviRules, duplicate contacts and host-side jobs. Works on Standalone, Drupal and WordPress.</description>
   <license>AGPL-3.0-or-later</license>
   <authors>
