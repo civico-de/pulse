@@ -2,6 +2,8 @@
 
 # pulse
 
+> **Status: beta.** The features are complete; details can still change between releases.
+
 pulse is a CiviCRM extension that tells an uptime monitor whether a site is really alive. It adds a token-protected URL for Uptime Kuma, Nagios, Icinga or any other HTTP monitor. A successful answer means the web server, PHP, the CMS and CiviCRM booted, the database answered and cron ran recently.
 
 pulse also reports problems that are not outages as messages on CiviCRM's system status page, which the [herald](https://github.com/civico-de/herald) extension can alert on. Its status checks cover pending updates, stuck jobs and queues, failed payment webhooks, disk space, PHP fatal errors, broken CiviRules configuration and duplicate contacts. A host can report backups and other host-side jobs to pulse through a status file.
