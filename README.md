@@ -1,4 +1,4 @@
-![pulse: CiviCRM boot, jobs and queues, disk and updates are checked for an uptime monitor and the system status page](handbook/images/cover.png)
+![pulse: CiviCRM boot, jobs and queues, disk and updates are checked for an uptime monitor and the system status page](docs/handbook/images/cover.png)
 
 # pulse
 

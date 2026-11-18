@@ -11,7 +11,7 @@ use Civi\Pulse\Vendor\Civico\Stdlib\Cast;
  * A process on the host records each dump, backup or health run in a small
  * metadata-only JSON file, mounted read-only into this container
  * (`pulse_host_status_file`; empty disables). The format is documented in
- * handbook/host-status.md. This check fails when
+ * docs/handbook/host-status.md. This check fails when
  *
  *  - the file itself is stale (`updated` older than the freshness window), or
  *  - any recorded job's last run errored, or

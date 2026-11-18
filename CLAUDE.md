@@ -28,7 +28,7 @@ reported as core status messages `pulse_<check>` via `hook_civicrm_check`
   that convention for new checks.
 - The host status check reads one host-mounted metadata JSON, read-only; the
   app must never gain a path to backups, credentials, or the host tooling.
-  Its format is pulse's own, documented in `handbook/host-status.md` without
+  Its format is pulse's own, documented in `docs/handbook/host-status.md` without
   naming any producer; a change to it is a change to that page.
 - Route registration goes through CiviCRM's menu system so Standalone,
   Drupal, and WordPress all work without CMS glue.
@@ -51,4 +51,4 @@ The test bootstrap fails loudly if `TEST_DB_DSN` (`~/.cv.json`, provisioned
 by the civikitchen entrypoint) is missing — without it Civi\Test would wipe
 the dev DB. Do not weaken that guard. Check semantics, per-check settings,
 and cache windows (endpoint System.check 5 min, extension feed 6 h) are documented in
-`handbook/`, which is published as the documentation site.
+`docs/handbook/`, which is published as the documentation site.
